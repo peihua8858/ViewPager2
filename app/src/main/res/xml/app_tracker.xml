@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 媒体资源ID -->
+
+    <!-- <string name="ga_trackingId">UA-66867445-5</string>--><!--测试环境-->
+
+    <!--<string name="ga_trackingId">UA-45366859-4</string>--><!--正式环境-->
+
+    <!-- APP名称，如果不设置会自动从package里抓取 -->
+    <!--    <string name="ga_appName">MyAppTest</string>-->
+
+    <!-- APP版本，如果不设置会自动从package里抓取 -->
+    <!--    <string name="ga_appVersion">3.0</string>-->
+
+    <!-- log日志，可以填error,warning,info, and verbose，默认为warning -->
+    <string name="ga_logLevel">verbose</string>
+
+    <!-- 数据发送给谷歌的周期，默认为30分钟（1800秒）ga 每隔多少秒会把挂起的未发的请求一并发了 -->
+    <integer name="ga_dispatchPeriod">10</integer>
+
+
+    <!-- 获取APP报错，默认为false -->
+    <boolean name="ga_reportUncaughtExceptions">true</boolean>
+
+    <!-- 设置会话超时（APP保留在后台），默认为30秒，设置为负数则不会超时 -->
+    <int name="ga_sessionTimeout">-1</int>
+
+    <!-- 设置测试环境，默认为false，设置为true则数据不会发送给谷歌 -->
+    <boolean name="ga_dryRun">false</boolean>
+
+</resources>

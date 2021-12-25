@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 图片加载失败时的占位图,用在CardView内时，为了设置cardBackgroundColor透明减少过度绘制，
+    在加载失败情况下mipmap下的图是透明的，会有CardView边缘内侧阴影，因此加上白色背景避免 -->
+    <item>
+        <shape>
+            <solid android:color="@color/white"/>
+        </shape>
+    </item>
+    <item>
+        <bitmap android:src="@mipmap/ic_loading_fail"/>
+    </item>
+</layer-list>
