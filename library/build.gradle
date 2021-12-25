@@ -39,3 +39,16 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
 }
 group = 'com.github.peihua8858'
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.peihua8858'
+                artifactId = 'ViewPager2'
+                version = '1.0.0'
+            }
+        }
+    }
+}
