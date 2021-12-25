@@ -112,7 +112,6 @@ class CirclePageIndicator @JvmOverloads constructor(
             return
         }
         if (mCurrentPage >= count) {
-            setCurrentItem(count - 1)
             return
         }
         val longSize: Int //

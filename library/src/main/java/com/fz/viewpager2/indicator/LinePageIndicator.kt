@@ -72,15 +72,6 @@ class LinePageIndicator @JvmOverloads constructor(
             invalidate()
         }
 
-//    val itemCount: Int
-//        get() {
-//            val adapter = mViewPager?.adapter
-//            if (adapter is AutoScrollLoopPagerAdapter) {
-//                return adapter.realItemCount
-//            }
-//            return adapter?.itemCount ?: 0
-//        }
-
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         if (mViewPager == null) {
@@ -91,7 +82,6 @@ class LinePageIndicator @JvmOverloads constructor(
             return
         }
         if (mCurrentPage >= count) {
-//            setCurrentItem(count - 1)
             return
         }
         val lineWidthAndGap = mLineWidth + mGapWidth

@@ -5,6 +5,7 @@ import android.os.Bundle
 import com.fz.imageloader.ImageLoader
 import com.fz.imageloader.glide.ImageGlideFetcher
 import com.fz.viewpager2.AutoScrollLoopViewPager2
+import com.fz.viewpager2.indicator.CirclePageIndicator
 import com.fz.viewpager2.indicator.LinePageIndicator
 
 class MainActivity : AppCompatActivity() {
@@ -13,7 +14,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         ImageLoader.getInstance().createProcessor(ImageGlideFetcher())
         val viewPager = findViewById<AutoScrollLoopViewPager2>(R.id.view_pager)
-        val pagerIndicator = findViewById<LinePageIndicator>(R.id.pager_indicator)
+//        val pagerIndicator = findViewById<LinePageIndicator>(R.id.pager_indicator)
+        val pagerIndicator = findViewById<CirclePageIndicator>(R.id.circle_indicator)
         val images = mutableListOf<String>()
         images.add("https://img95.699pic.com/photo/40094/7630.jpg_wh300.jpg")
         images.add("https://rumenz.com/static/cimg/img/demo2.jpg")

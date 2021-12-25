@@ -12,17 +12,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <com.fz.viewpager2.indicator.LinePageIndicator
-        android:id="@+id/pager_indicator"
+    <com.fz.viewpager2.indicator.CirclePageIndicator
+        android:id="@+id/circle_indicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:layoutDirection="ltr"
-        app:gapWidth="4dp"
+        android:layout_alignParentBottom="true"
+        android:padding="6dp"
+        app:extraSpacing="4dp"
+        app:fillColor="@color/white"
         app:layout_constraintBottom_toBottomOf="@id/view_pager"
-        app:lineWidth="20dp"
-        app:selectedColor="@color/white"
-        app:strokeWidth="2dp"
-        app:unselectedColor="#80FFFFFF" />
+        app:pageColor="#66000000"
+        app:radius="4dp"
+        app:showIndicatorBorder="false"
+        app:strokeWidth="0dp" />
+<!--    <com.fz.viewpager2.indicator.LinePageIndicator-->
+<!--        android:id="@+id/pager_indicator"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginBottom="12dp"-->
+<!--        android:layoutDirection="ltr"-->
+<!--        app:gapWidth="4dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/view_pager"-->
+<!--        app:lineWidth="20dp"-->
+<!--        app:selectedColor="@color/white"-->
+<!--        app:strokeWidth="2dp"-->
+<!--        app:unselectedColor="#80FFFFFF" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>
