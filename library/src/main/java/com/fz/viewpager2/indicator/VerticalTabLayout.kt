@@ -19,6 +19,7 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.TooltipCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.ConfigurationCompat
 import androidx.core.text.TextUtilsCompat
 import androidx.core.util.Pools
@@ -75,6 +76,8 @@ class VerticalTabLayout @JvmOverloads constructor(
     private val tabs: MutableList<VerticalTab> = ArrayList()
     private val mTabSelectedListeners: MutableList<OnTabSelectedListener> = ArrayList()
     private val mTabViewPool: Pools.Pool<TabView> = Pools.SimplePool(12)
+    private var selectedFontFamily: Typeface? = null
+    private var fontFamily: Typeface? = null
     private fun initStyleConfigure(context: Context, attrs: AttributeSet?) {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.VerticalTabLayout)
         mColorIndicator =
@@ -118,11 +121,11 @@ class VerticalTabLayout @JvmOverloads constructor(
             mTabPaddingBottom
         )
         mTabColor = typedArray.getColor(
-            R.styleable.VerticalTabLayout_tab_textColor,
+            R.styleable.VerticalTabLayout_tab_color,
             Color.parseColor("#f7f7f7")
         )
         mTabSelectedColor =
-            typedArray.getColor(R.styleable.VerticalTabLayout_tab_textSelectedColor, Color.WHITE)
+            typedArray.getColor(R.styleable.VerticalTabLayout_tab_selectedColor, Color.WHITE)
         val textColor =
             typedArray.getColor(R.styleable.VerticalTabLayout_tab_textColor, Color.BLACK)
         val selected =
@@ -132,6 +135,15 @@ class VerticalTabLayout @JvmOverloads constructor(
             intArrayOf(android.R.attr.selectableItemBackgroundBorderless)
         val typedArrayBg = getContext().theme.obtainStyledAttributes(attrsBg)
         mTabTitleBg = typedArrayBg.getDrawable(0)
+        try {
+            val selectedFontFamily =
+                typedArray.getResourceId(R.styleable.VerticalTabLayout_tab_selectedFontFamily, 0)
+            val fontFamily =
+                typedArray.getResourceId(R.styleable.VerticalTabLayout_tab_fontFamily, 0)
+            this.fontFamily = ResourcesCompat.getFont(context, fontFamily)
+            this.selectedFontFamily = ResourcesCompat.getFont(context, selectedFontFamily)
+        } catch (e: Exception) {
+        }
         typedArrayBg.recycle()
         typedArray.recycle()
     }
@@ -194,6 +206,8 @@ class VerticalTabLayout @JvmOverloads constructor(
         if (tabView == null) {
             tabView = TabView(context)
         }
+        tabView.setFont(fontFamily)
+        tabView.setSelectedFont(selectedFontFamily)
         tabView.tab = tab
         tabView.isFocusable = true
         return tabView
@@ -642,6 +656,16 @@ class VerticalTabLayout @JvmOverloads constructor(
         private var mTab: VerticalTab? = null
         private var mTextView: TextView? = null
         private var mCustomView: View? = null
+        private var selectedFontFamily: Typeface? = null
+        private var fontFamily: Typeface? = null
+        fun setSelectedFont(fontFamily: Typeface?) {
+            selectedFontFamily = fontFamily
+        }
+
+        fun setFont(fontFamily: Typeface?) {
+            this.fontFamily = fontFamily
+        }
+
         override fun performClick(): Boolean {
             val handled = super.performClick()
             return if (mTab != null) {
@@ -659,6 +683,7 @@ class VerticalTabLayout @JvmOverloads constructor(
             super.setSelected(selected)
             if (mTextView != null) {
                 mTextView!!.isSelected = selected
+                mTextView!!.typeface = if (selected) selectedFontFamily else fontFamily
             }
             if (mCustomView != null) {
                 mCustomView!!.isSelected = selected
