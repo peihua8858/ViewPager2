@@ -313,7 +313,7 @@ class VerticalTabLayout @JvmOverloads constructor(
         }
     }
 
-    fun setupWithViewPager(viewPager: ViewPager2?) {
+    fun setupWithViewPager(viewPager: ViewPager2?, smoothScroll: Boolean) {
         if (mViewPager != null && mTabPageChangeListener != null) {
             mViewPager!!.unregisterOnPageChangeCallback(mTabPageChangeListener!!)
         }
@@ -326,7 +326,8 @@ class VerticalTabLayout @JvmOverloads constructor(
             }
             viewPager.registerOnPageChangeCallback(mTabPageChangeListener!!)
             if (currentVpSelectedListener == null) {
-                currentVpSelectedListener = ViewPagerOnVerticalTabSelectedListener(viewPager)
+                currentVpSelectedListener =
+                    ViewPagerOnVerticalTabSelectedListener(viewPager, smoothScroll)
             }
             addOnTabSelectedListener(currentVpSelectedListener)
             setPagerAdapter(adapter)
@@ -335,6 +336,10 @@ class VerticalTabLayout @JvmOverloads constructor(
             setPagerAdapter(null)
         }
         populateFromPagerAdapter()
+    }
+
+    fun setupWithViewPager(viewPager: ViewPager2?) {
+        setupWithViewPager(viewPager, true)
     }
 
     private fun setPagerAdapter(adapter: RecyclerView.Adapter<*>?) {
@@ -835,12 +840,13 @@ class VerticalTabLayout @JvmOverloads constructor(
      * [ViewPager]和[VerticalTabLayout]的联动
      * 监听[VerticalTabLayout]的变化，更新[ViewPager]
      */
-    class ViewPagerOnVerticalTabSelectedListener(viewPager: ViewPager2) : OnTabSelectedListener {
+    class ViewPagerOnVerticalTabSelectedListener(viewPager: ViewPager2, private val smoothScroll: Boolean) :
+        OnTabSelectedListener {
         private val viewPagerRef: WeakReference<ViewPager2>
         override fun onTabSelected(tab: VerticalTab) {
             val viewPager = viewPagerRef.get()
             if (viewPager != null && viewPager.adapter!!.itemCount >= tab.position) {
-                viewPager.currentItem = tab.position
+                viewPager.setCurrentItem(tab.position,smoothScroll)
             }
         }
 
