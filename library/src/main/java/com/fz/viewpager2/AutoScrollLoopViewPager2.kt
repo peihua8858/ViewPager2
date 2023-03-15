@@ -30,7 +30,7 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
     defStyleAttr, defStyleRes
 ), DefaultLifecycleObserver {
     companion object {
-        const val TAG = "AutoScrollLoopViewPager2"
+        const val TAG = "AutoScrollLoopViewPager"
     }
 
     private var mViewPager2 = ViewPager2(context)
@@ -102,7 +102,7 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
             mInnerAdapter = AutoScrollLoopPagerAdapter(adapter!!)
             mInnerAdapter!!.registerAdapterDataObserver(mAdapterDataObserver)
             mViewPager2.adapter = mInnerAdapter
-            setCurrentItem(1, false)
+            setInnerCurrentItem(1, false)
         }
     private val pagerRealCount: Int
         get() = mInnerAdapter!!.realItemCount
@@ -127,6 +127,15 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
     }
 
     fun setCurrentItem(item: Int, smoothScroll: Boolean) {
+        val position = if (item >= pagerRealCount) {
+            pagerRealCount
+        } else if (item <= 0) {
+            1
+        } else item + 1
+        setInnerCurrentItem(position, smoothScroll)
+    }
+
+    private fun setInnerCurrentItem(item: Int, smoothScroll: Boolean) {
         Log.d(TAG, "setCurrentItem $item")
         try {
             mViewPager2.setCurrentItem(item, smoothScroll)
@@ -139,7 +148,7 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
     }
 
     var currentItem: Int
-        get() = mViewPager2.currentItem
+        get() = getRealPosition(viewPager2.currentItem)
         set(item) {
             setCurrentItem(item, true)
         }
@@ -189,7 +198,7 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
         stopAutoTurning()
     }
 
-    override fun onSaveInstanceState(): Parcelable? {
+    override fun onSaveInstanceState(): Parcelable {
         val superState = super.onSaveInstanceState()
         val ss = SavedState(superState)
         ss.mCurrentItem = currentItem
@@ -221,7 +230,7 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
         )
         Log.d(TAG, "restorePendingState: $currentItem")
         mPendingCurrentItem = RecyclerView.NO_POSITION
-        setCurrentItem(currentItem, false)
+        setInnerCurrentItem(currentItem, false)
     }
 
     private inner class CycleOnPageChangeCallback : OnPageChangeCallback() {
@@ -268,7 +277,7 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
                 if (fixCurrentItem != INVALID_ITEM_POSITION && fixCurrentItem != mTempPosition) {
                     mTempPosition = INVALID_ITEM_POSITION
                     Log.d(TAG, "onPageScrollStateChanged: fixCurrentItem $fixCurrentItem")
-                    setCurrentItem(fixCurrentItem, false)
+                    setInnerCurrentItem(fixCurrentItem, false)
                 }
             }
             onPageChangeCallback?.onPageScrollStateChanged(state)
@@ -300,7 +309,7 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
                 }
                 val currentItem = cycleViewPager2.currentItem
                 val nextItem = (currentItem + 1) % itemCount
-                cycleViewPager2.setCurrentItem(nextItem, true)
+                cycleViewPager2.setInnerCurrentItem(nextItem, true)
                 cycleViewPager2.postDelayed(
                     cycleViewPager2.mAutoTurningRunnable,
                     cycleViewPager2.autoTurningTime

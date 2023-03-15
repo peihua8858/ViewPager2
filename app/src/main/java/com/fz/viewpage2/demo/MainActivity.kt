@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
 //        viewPager.setIndicator(pagerIndicator)
         pagerIndicator.setViewPager(viewPager)
         viewPager.setAutoTurning(3000)
+        viewPager.currentItem=0
 
     }
 }
