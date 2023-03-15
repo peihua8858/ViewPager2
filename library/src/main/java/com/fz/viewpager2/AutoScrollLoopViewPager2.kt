@@ -131,7 +131,7 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
         try {
             mViewPager2.setCurrentItem(item, smoothScroll)
             if (!smoothScroll) {
-                onPageChangeCallback?.onPageSelected(realCurrentItem)
+                onPageChangeCallback?.onPageSelected(getRealPosition(item))
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -143,8 +143,11 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
         set(item) {
             setCurrentItem(item, true)
         }
-    val realCurrentItem: Int
-        get() = if (currentItem >= 1) currentItem - 1 else currentItem
+
+    fun getRealPosition(position: Int): Int {
+        return mInnerAdapter?.getRealPosition(position) ?: 0
+    }
+
     var offscreenPageLimit: Int
         get() = mViewPager2.offscreenPageLimit
         set(limit) {
@@ -232,7 +235,11 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
         ) {
             Log.d(
                 TAG,
-                "onPageScrolled: $position positionOffset: $positionOffset positionOffsetPixels: $positionOffsetPixels,realCurrentItem: $realCurrentItem"
+                "onPageScrolled: $position positionOffset: $positionOffset positionOffsetPixels: $positionOffsetPixels,realCurrentItem: ${
+                    getRealPosition(
+                        position
+                    )
+                }"
             )
             onPageChangeCallback?.onPageScrolled(
                 position,
@@ -242,11 +249,11 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
         }
 
         override fun onPageSelected(position: Int) {
-            Log.d(TAG, "onPageSelected: $position,realCurrentItem: $realCurrentItem")
+            Log.d(TAG, "onPageSelected: $position,realCurrentItem: ${getRealPosition(position)}")
             if (isBeginPagerChange) {
-                mTempPosition =  position
+                mTempPosition = position
             }
-            onPageChangeCallback?.onPageSelected(realCurrentItem)
+            onPageChangeCallback?.onPageSelected(getRealPosition(position))
         }
 
         override fun onPageScrollStateChanged(state: Int) {
@@ -291,7 +298,7 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
                 if (itemCount == 0) {
                     return
                 }
-                val currentItem=cycleViewPager2.currentItem
+                val currentItem = cycleViewPager2.currentItem
                 val nextItem = (currentItem + 1) % itemCount
                 cycleViewPager2.setCurrentItem(nextItem, true)
                 cycleViewPager2.postDelayed(

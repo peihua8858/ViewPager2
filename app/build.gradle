@@ -39,6 +39,6 @@ dependencies {
     implementation project(":library")
     implementation 'com.github.peihua8858.ImageLoader:imageloader:1.0.8'
     implementation 'com.github.peihua8858.ImageLoader:glidefetcher:1.0.8'
-    implementation 'com.github.peihua8858:BaseRecyclerViewAdapterHelper:3.0.7.2'
-    implementation 'com.github.peihua8858:kotlinCommonUtils:1.0.16'
+    implementation 'com.github.peihua8858:BaseRecyclerViewAdapterHelper:3.0.7.7'
+    implementation 'com.github.peihua8858:kotlinCommonUtils:1.1.0'
 }

@@ -26,7 +26,7 @@ class CirclePageIndicator @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = R.attr.vpiCirclePageIndicatorStyle
-) : AbstractPageIndicator(context, attrs, defStyle){
+) : AbstractPageIndicator(context, attrs, defStyle) {
     private var mRadius: Float
     private val showBorder: Boolean
     private val mPaintPageFill = Paint(Paint.ANTI_ALIAS_FLAG)
