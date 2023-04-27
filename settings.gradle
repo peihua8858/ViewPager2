@@ -4,9 +4,8 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }
-        jcenter() // Warning: this repository is going to shut down soon
     }
 }
 rootProject.name = "ViewPager2"
-//include ':app'
+include ':app'
 include ':library'

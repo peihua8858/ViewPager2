@@ -152,6 +152,8 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
         set(item) {
             setCurrentItem(item, true)
         }
+    private val innerCurrentItem: Int
+        get() = viewPager2.currentItem
 
     fun getRealPosition(position: Int): Int {
         return mInnerAdapter?.getRealPosition(position) ?: 0
@@ -201,7 +203,7 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
     override fun onSaveInstanceState(): Parcelable {
         val superState = super.onSaveInstanceState()
         val ss = SavedState(superState)
-        ss.mCurrentItem = currentItem
+        ss.mCurrentItem = innerCurrentItem
         Log.d(TAG, "onSaveInstanceState: " + ss.mCurrentItem)
         return ss
     }
@@ -307,7 +309,7 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
                 if (itemCount == 0) {
                     return
                 }
-                val currentItem = cycleViewPager2.currentItem
+                val currentItem = cycleViewPager2.innerCurrentItem
                 val nextItem = (currentItem + 1) % itemCount
                 cycleViewPager2.setInnerCurrentItem(nextItem, true)
                 cycleViewPager2.postDelayed(
