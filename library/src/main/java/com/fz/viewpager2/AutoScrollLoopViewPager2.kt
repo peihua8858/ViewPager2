@@ -41,7 +41,7 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
     private var mPendingCurrentItem = RecyclerView.NO_POSITION
     private val mAdapterDataObserver = object : AdapterDataObserver() {
         override fun onChanged() {
-            val itemCount = adapter?.itemCount ?: 0
+            val itemCount = itemCount
             if (itemCount <= 1) {
                 if (isTurning) {
                     stopAutoTurning()
@@ -97,15 +97,27 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
 
     private var mInnerAdapter: AutoScrollLoopPagerAdapter<*>? = null
     var adapter: RecyclerView.Adapter<*>?
-        get() = mInnerAdapter
+        get() = mInnerAdapter?.adapter
         set(adapter) {
+            unregisterCurrentItemDataSetTracker(mInnerAdapter)
             mInnerAdapter = AutoScrollLoopPagerAdapter(adapter!!)
-            mInnerAdapter!!.registerAdapterDataObserver(mAdapterDataObserver)
+            registerCurrentItemDataSetTracker(mInnerAdapter)
             mViewPager2.adapter = mInnerAdapter
             setInnerCurrentItem(1, false)
         }
+
+    private fun unregisterCurrentItemDataSetTracker(adapter: RecyclerView.Adapter<*>?) {
+        adapter?.unregisterAdapterDataObserver(mAdapterDataObserver)
+    }
+
+    private fun registerCurrentItemDataSetTracker(adapter: RecyclerView.Adapter<*>?) {
+        adapter?.registerAdapterDataObserver(mAdapterDataObserver)
+    }
+
     private val pagerRealCount: Int
-        get() = mInnerAdapter!!.realItemCount
+        get() = mInnerAdapter?.realItemCount ?: 0
+    private val itemCount: Int
+        get() = mInnerAdapter?.itemCount ?: 0
 
     @get:ViewPager2.Orientation
     var orientation: Int
@@ -182,7 +194,10 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
             if (canAutoTurning && isTurning) {
                 stopAutoTurning()
             }
-        } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_OUTSIDE) {
+        } else if (action == MotionEvent.ACTION_UP
+            || action == MotionEvent.ACTION_CANCEL
+            || action == MotionEvent.ACTION_OUTSIDE
+        ) {
             if (canAutoTurning) {
                 startAutoTurning()
             }
@@ -202,10 +217,10 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
 
     override fun onSaveInstanceState(): Parcelable {
         val superState = super.onSaveInstanceState()
-        val ss = SavedState(superState)
-        ss.mCurrentItem = innerCurrentItem
-        Log.d(TAG, "onSaveInstanceState: " + ss.mCurrentItem)
-        return ss
+        val state = SavedState(superState)
+        state.mCurrentItem = innerCurrentItem
+        Log.d(TAG, "onSaveInstanceState: " + state.mCurrentItem)
+        return state
     }
 
     override fun onRestoreInstanceState(state: Parcelable) {
@@ -213,9 +228,8 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
             super.onRestoreInstanceState(state)
             return
         }
-        val ss = state
-        super.onRestoreInstanceState(ss.superState)
-        mPendingCurrentItem = ss.mCurrentItem
+        super.onRestoreInstanceState(state.superState)
+        mPendingCurrentItem = state.mCurrentItem
         Log.d(TAG, "onRestoreInstanceState: $mPendingCurrentItem")
         restorePendingState()
     }
@@ -227,7 +241,7 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
         }
         val currentItem = Math.max(
             0, Math.min(
-                mPendingCurrentItem, mInnerAdapter?.itemCount ?: 0 - 1
+                mPendingCurrentItem, itemCount - 1
             )
         )
         Log.d(TAG, "restorePendingState: $currentItem")
@@ -289,7 +303,7 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
             if (position == INVALID_ITEM_POSITION) {
                 return INVALID_ITEM_POSITION
             }
-            val lastPosition = (mInnerAdapter?.itemCount ?: 0) - 1
+            val lastPosition = itemCount - 1
             var fixPosition = INVALID_ITEM_POSITION
             if (position == 0) {
                 fixPosition = if (lastPosition == 0) 0 else lastPosition - 1
@@ -305,7 +319,7 @@ class AutoScrollLoopViewPager2 @JvmOverloads constructor(
         override fun run() {
             val cycleViewPager2 = reference.get()
             if (cycleViewPager2 != null && cycleViewPager2.canAutoTurning && cycleViewPager2.isTurning) {
-                val itemCount = cycleViewPager2.adapter?.itemCount ?: 0
+                val itemCount = cycleViewPager2.itemCount
                 if (itemCount == 0) {
                     return
                 }
