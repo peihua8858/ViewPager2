@@ -78,6 +78,8 @@
         <attr name="strokeWidth" />
         <!-- Width of the gap between each indicator line. -->
         <attr name="gapWidth" format="dimension" />
+        <!-- 自动计算宽度 -->
+        <attr name="autoWidth" format="boolean" />
         <!-- View background -->
         <attr name="android:background" />
     </declare-styleable>

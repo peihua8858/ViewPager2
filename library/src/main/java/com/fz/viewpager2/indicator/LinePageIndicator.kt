@@ -7,12 +7,9 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.Log
-import android.view.*
-import androidx.viewpager2.widget.ViewPager2
-import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
-import com.fz.viewpager2.AutoScrollLoopViewPager2
+import android.view.MotionEvent
+import android.view.ViewConfiguration
 import com.fz.viewpager2.R
-import com.fz.viewpager2.AutoScrollLoopPagerAdapter
 import kotlin.math.abs
 import kotlin.math.ceil
 
@@ -34,6 +31,7 @@ class LinePageIndicator @JvmOverloads constructor(
     private var mLastMotionX = -1f
     private var mActivePointerId = INVALID_POINTER
     private var mIsDragging = false
+    private var mAutoWidth = false
     var isCentered: Boolean
         get() = mCentered
         set(centered) {
@@ -84,11 +82,19 @@ class LinePageIndicator @JvmOverloads constructor(
         if (mCurrentPage >= count) {
             return
         }
-        val lineWidthAndGap = mLineWidth + mGapWidth
-        val indicatorWidth = count * lineWidthAndGap - mGapWidth
         val paddingTop = paddingTop.toFloat()
         val paddingLeft = paddingLeft.toFloat()
         val paddingRight = paddingRight.toFloat()
+        if (mAutoWidth) {
+            val maxWidth = width - paddingLeft - paddingRight
+            if (mGapWidth == 0f) {
+                mLineWidth = maxWidth / itemCount.toFloat()
+            } else {
+                mLineWidth = (maxWidth - ((itemCount - 1) * mGapWidth)) / itemCount
+            }
+        }
+        val lineWidthAndGap = mLineWidth + mGapWidth
+        val indicatorWidth = count * lineWidthAndGap - mGapWidth
         val verticalOffset = paddingTop + (height - paddingTop - paddingBottom) / 2.0f
         var horizontalOffset = paddingLeft
         if (mCentered) {
@@ -121,6 +127,7 @@ class LinePageIndicator @JvmOverloads constructor(
                 mActivePointerId = ev.getPointerId(0)
                 mLastMotionX = ev.x
             }
+
             MotionEvent.ACTION_MOVE -> {
                 val activePointerIndex = ev.findPointerIndex(mActivePointerId)
                 val x = ev.getX(activePointerIndex)
@@ -137,6 +144,7 @@ class LinePageIndicator @JvmOverloads constructor(
                     }
                 }
             }
+
             MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
                 if (!mIsDragging) {
                     val count = itemCount
@@ -159,11 +167,13 @@ class LinePageIndicator @JvmOverloads constructor(
                 mActivePointerId = INVALID_POINTER
                 if (mViewPager!!.isFakeDragging) mViewPager!!.endFakeDrag()
             }
+
             MotionEvent.ACTION_POINTER_DOWN -> {
                 val index = ev.actionIndex
                 mLastMotionX = ev.getX(index)
                 mActivePointerId = ev.getPointerId(index)
             }
+
             MotionEvent.ACTION_POINTER_UP -> {
                 val pointerIndex = ev.actionIndex
                 val pointerId = ev.getPointerId(pointerIndex)
@@ -173,6 +183,7 @@ class LinePageIndicator @JvmOverloads constructor(
                 }
                 mLastMotionX = ev.getX(ev.findPointerIndex(mActivePointerId))
             }
+
             else -> {
             }
         }
@@ -295,6 +306,7 @@ class LinePageIndicator @JvmOverloads constructor(
         mLineWidth = a.getDimension(R.styleable.LinePageIndicator_lineWidth, defaultLineWidth)
         mGapWidth = a.getDimension(R.styleable.LinePageIndicator_gapWidth, defaultGapWidth)
         strokeWidth = a.getDimension(R.styleable.LinePageIndicator_strokeWidth, defaultStrokeWidth)
+        mAutoWidth = a.getBoolean(R.styleable.LinePageIndicator_autoWidth, mAutoWidth)
         mPaintUnselected.color =
             a.getColor(R.styleable.LinePageIndicator_unselectedColor, defaultUnselectedColor)
         mPaintSelected.color =
