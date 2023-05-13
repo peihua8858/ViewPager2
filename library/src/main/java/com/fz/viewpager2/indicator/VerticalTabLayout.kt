@@ -374,9 +374,9 @@ class VerticalTabLayout @JvmOverloads constructor(
     }
 
     private fun scrollToTab(position: Int) {
-        val tabView = getTabAt(position)!!.mView
+        val tabView = getTabAt(position)?.mView ?: return
         val y = scrollY
-        val tabTop = tabView!!.top + tabView.height / 2 - y
+        val tabTop = tabView.top + tabView.height / 2 - y
         val target = height / 2
         if (tabTop > target) {
             smoothScrollBy(0, tabTop - target)
@@ -401,7 +401,13 @@ class VerticalTabLayout @JvmOverloads constructor(
         private val mIndicatorPaint: Paint
         private val mIndicatorRect: RectF
         private val mIndicatorPath: Path
+        private var mAutoTabHeight: Boolean = false
         private var mIndicatorAnimatorSet: AnimatorSet? = null
+
+        init {
+            mAutoTabHeight = mTabHeight <= 0
+        }
+
         override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
             setIndicatorGravity()
@@ -426,9 +432,9 @@ class VerticalTabLayout @JvmOverloads constructor(
 
         private fun calcIndicatorY(offset: Float) {
             val index = floor(offset.toDouble()).toInt()
-            val childView = getChildAt(index)
-            if (childView == null) {
-                return
+            val childView = getChildAt(index) ?: return
+            if (mAutoTabHeight) {
+                mTabHeight = childView.measuredHeight
             }
             if (floor(offset.toDouble()) != (childCount - 1).toDouble() && ceil(offset.toDouble()) != 0.0) {
                 val nextView = getChildAt(index + 1)
@@ -840,13 +846,16 @@ class VerticalTabLayout @JvmOverloads constructor(
      * [ViewPager]和[VerticalTabLayout]的联动
      * 监听[VerticalTabLayout]的变化，更新[ViewPager]
      */
-    class ViewPagerOnVerticalTabSelectedListener(viewPager: ViewPager2, private val smoothScroll: Boolean) :
+    class ViewPagerOnVerticalTabSelectedListener(
+        viewPager: ViewPager2,
+        private val smoothScroll: Boolean
+    ) :
         OnTabSelectedListener {
         private val viewPagerRef: WeakReference<ViewPager2>
         override fun onTabSelected(tab: VerticalTab) {
             val viewPager = viewPagerRef.get()
             if (viewPager != null && viewPager.adapter!!.itemCount >= tab.position) {
-                viewPager.setCurrentItem(tab.position,smoothScroll)
+                viewPager.setCurrentItem(tab.position, smoothScroll)
             }
         }
 
