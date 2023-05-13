@@ -229,7 +229,7 @@ class VerticalTabLayout @JvmOverloads constructor(
             tabView!!.isSelected = true
             tabView.setBackgroundColor(mTabSelectedColor)
             mSelectedTab = tab
-            mTabStrip!!.post { mTabStrip!!.moveIndicator(0f) }
+            mTabStrip!!.post { mTabStrip!!.moveIndicator(0, 0f) }
         }
     }
 
@@ -386,7 +386,7 @@ class VerticalTabLayout @JvmOverloads constructor(
     }
 
     private fun setScrollPosition(position: Int, positionOffset: Float) {
-        mTabStrip!!.moveIndicator(positionOffset + position)
+        mTabStrip?.moveIndicator(position, positionOffset)
     }
 
     private fun dpToPx(dps: Float): Int {
@@ -430,17 +430,17 @@ class VerticalTabLayout @JvmOverloads constructor(
             }
         }
 
-        private fun calcIndicatorY(offset: Float) {
-            val index = floor(offset.toDouble()).toInt()
+        private fun calcIndicatorY(index: Int, offset: Float) {
             val childView = getChildAt(index) ?: return
             if (mAutoTabHeight) {
                 mTabHeight = childView.measuredHeight
             }
             if (floor(offset.toDouble()) != (childCount - 1).toDouble() && ceil(offset.toDouble()) != 0.0) {
                 val nextView = getChildAt(index + 1)
-                mIndicatorTopY = childView.top + (nextView.top - childView.top) * (offset - index)
+                mIndicatorTopY =
+                    childView.top + (nextView.top - childView.top) * (offset)
                 mIndicatorBottomY =
-                    childView.bottom + (nextView.bottom - childView.bottom) * (offset - index)
+                    childView.bottom + (nextView.bottom - childView.bottom) * (offset)
             } else {
                 mIndicatorTopY = childView.top.toFloat()
                 mIndicatorBottomY = childView.bottom.toFloat()
@@ -457,8 +457,8 @@ class VerticalTabLayout @JvmOverloads constructor(
             moveIndicatorWithAnimator(selectedTabPosition)
         }
 
-        fun moveIndicator(offset: Float) {
-            calcIndicatorY(offset)
+        fun moveIndicator(index: Int, offset: Float) {
+            calcIndicatorY(index, offset)
             invalidate()
         }
 
@@ -468,6 +468,7 @@ class VerticalTabLayout @JvmOverloads constructor(
          * @param index tab location's index
          */
         fun moveIndicatorWithAnimator(index: Int) {
+            calcIndicatorY(index, 0f)
             val direction = index - selectedTabPosition
             val childView = getChildAt(index)
             val targetTop = childView.top.toFloat()
