@@ -23,6 +23,7 @@ abstract class AbstractPageIndicator @JvmOverloads constructor(
     protected var mListener: ViewPager2.OnPageChangeCallback? = null
     protected var mViewPager: ViewPager2? = null
     protected var mCurrentPage = 0
+    private var mItemCount: Int = 0
     override fun setViewPager(view: ViewPager2) {
         if (mViewPager == view) {
             return
@@ -139,12 +140,18 @@ abstract class AbstractPageIndicator @JvmOverloads constructor(
         mListener = listener
     }
 
-    override val itemCount: Int
+    override var itemCount: Int
         get() {
+            if (mItemCount > 0) {
+                return mItemCount
+            }
             val adapter = mViewPager?.adapter
             if (adapter is AutoScrollLoopPagerAdapter) {
                 return adapter.realItemCount
             }
             return adapter?.itemCount ?: 0
+        }
+        set(value) {
+            mItemCount = value
         }
 }
