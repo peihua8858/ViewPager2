@@ -104,9 +104,9 @@ class MainActivity : AppCompatActivity() {
 ```
 ## 演示效果
 
-|          轮播圆点指示器效果          | 
-|:----------------------:|
-| ![](images/image.gif) | 
+|          轮播圆点指示器        |          轮播横线指示器        |         垂直滚动指示器       |
+|:----------------------:|:----------------------:|:----------------------:|
+| ![](images/image.gif) | ![](images/image2.jpg) | ![](images/image3.jpg) |
 
 ## License
 ```sh
