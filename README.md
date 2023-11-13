@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
 
 |          轮播圆点指示器        |          轮播横线指示器        |         垂直滚动指示器       |
 |:----------------------:|:----------------------:|:----------------------:|
-| ![](images/image.gif) | ![](images/image2.jpg) | ![](images/image3.jpg) |
+| ![](images/image.gif) | ![](images/image2.gif) | ![](images/image3.gif) |
 
 ## License
 ```sh
