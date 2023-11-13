@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity() {
 ```
 ## 演示效果
 
-|          轮播效果          | 
+|          轮播圆点指示器效果          | 
 |:----------------------:|
 | ![](images/image.gif) | 
 
