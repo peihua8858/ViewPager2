@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
 
 |          单选图片          | 
 |:----------------------:|
-| ![](images/image.jpg) | 
+| ![](images/image.gif) | 
 
 ## License
 ```sh
