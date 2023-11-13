@@ -104,9 +104,9 @@ class MainActivity : AppCompatActivity() {
 ```
 ## 演示效果
 
-|          单选图片          | 
+|          轮播圆点指示器效果          | 
 |:----------------------:|
-| ![](images/image.jpg) | 
+| ![](images/image.gif) | 
 
 ## License
 ```sh
