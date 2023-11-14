@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-  // PictureSelector
+  // ViewPager2
   implementation 'com.github.peihua8858:ViewPager2:${latestVersion}'
 }
 ```
